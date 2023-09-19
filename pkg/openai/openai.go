@@ -2,17 +2,16 @@ package openai
 
 import (
 	"context"
-	"fmt"
-	"os"
+	"log"
 
+	configFile "github.com/Delavalom/qloq/pkg/config"
 	openai "github.com/sashabaranov/go-openai"
 )
 
 func Generate(content string) string {
-	apiKey, isEmpty := os.LookupEnv("API_KEY")
-	if !isEmpty {
-		fmt.Println("Error loading the API_KEY try qloq config to set it up")
-		os.Exit(1)
+	apiKey, err := configFile.Retrieve()
+	if err != nil {
+		log.Fatalln("Error loading the API_KEY try qloq config to set it up")
 	}
 	client := openai.NewClient(apiKey)
 	resp, err := client.CreateChatCompletion(
